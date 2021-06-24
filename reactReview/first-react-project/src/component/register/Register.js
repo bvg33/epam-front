@@ -59,7 +59,6 @@ class Register extends Component {
             const createUser = new UserApi();
             createUser.createUser(stringifyUser)
                 .then(() => {
-                    this.clearFields();
                     this.setState({message: 'Success'});
                 })
                 .catch(this.setState({message: "User with such login is already exist"}))
@@ -77,12 +76,6 @@ class Register extends Component {
         const loginInput = this.state.loginInput;
         const passwordInput = this.state.passwordInput;
         return new User(loginInput, passwordInput);
-    }
-
-    clearFields = () => {
-        this.setState({loginInput: ''})
-        this.setState({passwordInput: ''})
-        this.setState({repeatPasswordInput: ''})
     }
 }
 

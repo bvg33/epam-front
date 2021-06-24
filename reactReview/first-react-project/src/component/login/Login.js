@@ -5,7 +5,9 @@ import User from "../../entity/User";
 import {NavLink, withRouter} from "react-router-dom";
 import AuthApi from "../../api/AuthApi";
 
+const  height = 100;
 class Login extends Component {
+
     constructor(props) {
         super(props);
         this.loginButtonClick = this.loginButtonClick.bind(this);
@@ -21,7 +23,7 @@ class Login extends Component {
     render() {
         return (
             <div className={styles.login}>
-                <img src={epamLogo} height="100" className={styles.epamLoginImage}/>
+                <img src={epamLogo} height={height} className={styles.epamLoginImage}/>
                 <label><input className={styles.loginInput} onChange={this.changeLogin} placeholder="login"/></label>
                 <label><input className={styles.passwordInput} onChange={this.changePassword} placeholder="password"
                               type="password"/></label>
@@ -48,8 +50,8 @@ class Login extends Component {
         const authApi = new AuthApi();
         authApi.auth(stringifyUser)
             .catch(this.setState({invalidCredentials: 'Invalid Credentials'}))
-            .then(token => {
-                sessionStorage.setItem("token", token["token"]);
+            .then(response => {
+                sessionStorage.setItem("token", response["token"]);
                 this.props.history.push('/main');
             });
     }

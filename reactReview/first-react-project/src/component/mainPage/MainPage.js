@@ -4,7 +4,7 @@ import style from './style/MainPageStyle.module.css'
 import folder from './../../images/folder.jpg'
 import file from './../../images/file.png'
 import drive from './../../images/drive.png'
-import FileApi from "../../api/FileApi";
+import fileApi from "../../api/FileApi";
 
 
 if (sessionStorage.getItem('url') == null) {
@@ -27,11 +27,11 @@ class MainPage extends Component {
     }
 
     render() {
-        const arr = this.createFileItem();
+        const fileItemArray = this.createFileItem();
         return (
             <div className={style.allFiles}>
                 <div className={style.fileBlock}>
-                    {arr.map((row) => (<div>{row}</div>))}
+                    {fileItemArray.map(row => (<div>{row}</div>))}
                 </div>
             </div>
         );
@@ -40,26 +40,22 @@ class MainPage extends Component {
 
     componentDidMount() {
         const url = sessionStorage.getItem('url');
-        const fileApi = new FileApi();
         fileApi.getFiles(url)
             .then(files => this.setFileStates(files));
     }
 
 
     setFileStates = (fileList) => {
-        const names = Array.from(fileList, file => file["name"]);
-        const paths = Array.from(fileList, file => file["path"]);
-        const sizes = Array.from(fileList, file => file["size"]);
+        const filesNames = Array.from(fileList, file => file["name"]);
+        const filesPaths = Array.from(fileList, file => file["path"]);
+        const filesSizes = Array.from(fileList, file => file["size"]);
         const types = Array.from(fileList, file => file["type"]);
         const size = fileList.length;
+        const filePathsToImg = [size];
         for (let i = 0; i < size; i++) {
-            this.state.names.push(names[i]);
-            this.state.paths.push(paths[i]);
-            this.state.sizes.push(sizes[i]);
-            let pathToImg = this.definePathToImg(types[i]);
-            this.state.pathsToImg.push(pathToImg);
+            filePathsToImg[i] = this.definePathToImg(types[i]);
         }
-        this.setState({itemNumber: size});
+        this.setState({itemNumber: size,names:filesNames,sizes:filesSizes,paths:filesPaths,pathsToImg:filePathsToImg});
     }
 
     definePathToImg = (type) => {
@@ -75,15 +71,16 @@ class MainPage extends Component {
     }
 
     createFileItem = () => {
-        const arr = new Array(this.state.itemNumber)
-        for (let i = 0; i < arr.length; i++) {
+        const length = this.state.itemNumber;
+        const fileItemArray = new Array(length)
+        for (let i = 0; i <length; i++) {
             let name = `Name : ${this.state.names[i]}`;
             let size = `Size : ${this.state.sizes[i]} MB`;
             let path = `Path : ${this.state.paths[i]}`;
             let pathToImg = this.state.pathsToImg[i];
-            arr[i] = <FileItem name={name} size={size} path={path} pathToImg={pathToImg}/>;
+            fileItemArray.push(<FileItem name={name} size={size} path={path} pathToImg={pathToImg}/>);
         }
-        return arr;
+        return fileItemArray;
     }
 }
 
