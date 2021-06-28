@@ -1,61 +1,37 @@
 import React, {Component} from "react";
 import styles from './style/MenuStyle.module.css'
 import {withRouter} from 'react-router-dom';
+import locale from "../../localization/Locale";
+import classNames from "classnames/bind";
+import {goOutFromFolder, logOut} from "../../redux/creator/GlobalStateActionCreator";
+
 class Menu extends Component {
     constructor(props) {
         super(props);
-        this.enterFolder = this.enterFolder.bind(this);
         this.arrowButton = this.arrowButton.bind(this);
         this.logoutButtonClicked = this.logoutButtonClicked.bind(this);
     }
 
     render() {
-        const favouriteClass = `material-icons ${styles.favourite}`;
-        const arrowClass = `material-icons ${styles.arrow}`;
         return (
             <div className={styles.menu}>
-                <span className={favouriteClass}>favorite_border</span>
-                <span onClick={this.arrowButton} className={arrowClass}>arrow_back</span>
-                <button className={styles.logoutButton} onClick={this.logoutButtonClicked}>Logout</button>
+                <span className={classNames('material-icons', styles.favourite)}>favorite_border</span>
+                <span onClick={this.arrowButton} className={classNames('material-icons', styles.arrow)}>arrow_back</span>
+                <button className={styles.logoutButton} onClick={this.logoutButtonClicked}>{locale.logout}</button>
             </div>
         )
     }
 
     logoutButtonClicked() {
-        sessionStorage.removeItem('url');
-        sessionStorage.removeItem('token');
-        this.props.history.push('/login');
+        const action = logOut();
+        this.props.globalState.dispatch(action);
     }
 
     arrowButton() {
-        let url = sessionStorage.getItem('url');
-        if (url != null) {
-            let splitUrl = url.split('&');
-            if (splitUrl.length < 2) {
-                splitUrl = splitUrl[0].split('?')
-                if (splitUrl.length < 2) {
-                    splitUrl = splitUrl[0].split('/');
-                    splitUrl.pop();
-                    if (splitUrl.length < 3) {
-                        return;
-                    }
-                    splitUrl = splitUrl.join('/');
-                    this.enterFolder(splitUrl);
-                    return;
-                }
-                this.enterFolder(splitUrl[0]);
-            } else {
-                splitUrl.pop();
-                splitUrl = splitUrl.join('&');
-                this.enterFolder(splitUrl)
-            }
-        }
+        const action = goOutFromFolder();
+        this.props.globalState.dispatch(action);
     }
 
-    enterFolder(url) {
-        sessionStorage.setItem('url', url);
-        this.props.history.go(0);
-    }
 }
 
 export default withRouter(Menu);

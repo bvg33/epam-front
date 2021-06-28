@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import styles from './style/FileItemStyle.module.css'
 import {withRouter} from 'react-router-dom';
-
+import {enterFolder} from "../../redux/creator/GlobalStateActionCreator";
 class FileItem extends Component {
     constructor(props) {
         super(props);
@@ -23,19 +23,8 @@ class FileItem extends Component {
     }
 
     openButtonClicked() {
-        let name = this.props.name.split(' ')[2];
-        let url = sessionStorage.getItem('url');
-        let splitUrl = url.split('/');
-        if (splitUrl.length === 3) {
-            name = name.substring(0, 1);
-            url = `${url}/${name}`
-        } else {
-            splitUrl = url.split('?')
-            let character = splitUrl.length < 2 ? '?' : '&';
-            url = `${url}${character}folder=${name}`;
-        }
-        sessionStorage.setItem('url', url);
-        this.props.history.go(0);
+        const action = enterFolder(this.props.name);
+        this.props.globalState.dispatch(action);
     }
 }
 

@@ -2,7 +2,8 @@ import axios from "./axios/axios";
 
 class UserApi {
     createUser = (data) => {
-        return axios.post('/users/newUser', data)
+        const stringifyUser = JSON.stringify(data);
+        return axios.post('/users/newUser', stringifyUser)
             .then(response => response.data);
     }
 }

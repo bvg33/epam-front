@@ -13,10 +13,10 @@ class App extends Component {
     render() {
         return (
             <BrowserRouter>
-                <Header/>
-                <Route exact path='/login' component={Login}/>
-                <Route exact path='/register' component={Register}/>
-                <Route exact path='/main' component={MainPage}/>
+                <Header globalState={this.props.store}/>
+                <Route exact path='/login' render={() => <Login loginPageState={this.props.store}/>}/>
+                <Route exact path='/register' render={() => <Register registerPageState={this.props.store}/>}/>
+                <Route exact path='/main' render={() => <MainPage globalState={this.props.store}/>}/>
             </BrowserRouter>
         );
     }

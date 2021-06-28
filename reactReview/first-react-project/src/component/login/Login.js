@@ -1,11 +1,14 @@
 import React, {Component} from "react";
 import epamLogo from './../../images/epamWithBag.png'
 import styles from './style/LoginStyle.module.css'
-import User from "../../entity/User";
 import {NavLink, withRouter} from "react-router-dom";
-import AuthApi from "../../api/AuthApi";
+import locale from "../../localization/Locale";
+import {
+    loginButtonClickedAction,
+    loginFieldChangeAction,
+    passwordFieldChangeAction
+} from "../../redux/creator/LoginActionCreator";
 
-const  height = 100;
 class Login extends Component {
 
     constructor(props) {
@@ -13,53 +16,51 @@ class Login extends Component {
         this.loginButtonClick = this.loginButtonClick.bind(this);
         this.changeLogin = this.changeLogin.bind(this);
         this.changePassword = this.changePassword.bind(this);
-        this.state = {
-            invalidCredentials: '',
-            loginInput: '',
-            passwordInput: ''
-        };
+        this.logInCheck = this.logInCheck.bind(this);
     }
 
     render() {
+        const height = 100;
+        this.logInCheck();
         return (
             <div className={styles.login}>
                 <img src={epamLogo} height={height} className={styles.epamLoginImage}/>
-                <label><input className={styles.loginInput} onChange={this.changeLogin} placeholder="login"/></label>
-                <label><input className={styles.passwordInput} onChange={this.changePassword} placeholder="password"
-                              type="password"/></label>
-                <button onClick={this.loginButtonClick} className={styles.loginButton}>Log In</button>
+                <label><input className={styles.loginInput} onChange={this.changeLogin}
+                              placeholder={locale.login}/></label>
+                <label><input className={styles.passwordInput} onChange={this.changePassword}
+                              placeholder={locale.password} type="password"/></label>
+                <button onClick={this.loginButtonClick} className={styles.loginButton}>{locale.login}</button>
                 <NavLink to="/register">
                     <button className={styles.loginRegisterButton}>
-                        Register
+                        {locale.register}
                     </button>
                 </NavLink>
-                <label className={styles.invalidCredentials}>{this.state.invalidCredentials}</label>
-            </div>);
+                <label
+                    className={styles.invalidCredentials}>{(this.props.loginPageState.getState().loginPage.invalidCredentials) ? locale.invalidCredentialsText : ''}</label>
+            </div>
+        );
+    }
+
+    logInCheck() {
+        const token = this.props.loginPageState.getState().loginPage.token;
+        if (token !== '') {
+            this.props.history.push('/main');
+        }
     }
 
     changeLogin(event) {
-        this.setState({loginInput: event.target.value});
+        const action = loginFieldChangeAction(event.target.value);
+        this.props.loginPageState.dispatch(action);
     }
 
     changePassword(event) {
-        this.setState({passwordInput: event.target.value});
+        const action = passwordFieldChangeAction(event.target.value);
+        this.props.loginPageState.dispatch(action);
     }
 
     loginButtonClick() {
-        const stringifyUser = JSON.stringify(this.createUser());
-        const authApi = new AuthApi();
-        authApi.auth(stringifyUser)
-            .catch(this.setState({invalidCredentials: 'Invalid Credentials'}))
-            .then(response => {
-                sessionStorage.setItem("token", response["token"]);
-                this.props.history.push('/main');
-            });
-    }
-
-    createUser = () => {
-        const loginInput = this.state.loginInput;
-        const passwordInput = this.state.passwordInput;
-        return new User(loginInput, passwordInput);
+        const action = loginButtonClickedAction(this.props.loginPageState.dispatch);
+        this.props.loginPageState.dispatch(action);
     }
 }
 

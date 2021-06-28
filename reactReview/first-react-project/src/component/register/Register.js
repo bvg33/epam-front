@@ -2,8 +2,12 @@ import React, {Component} from "react";
 import style from './styles/RegisterStyle.module.css'
 import epamLogo from './../../images/epamWithBag.png'
 import {NavLink} from "react-router-dom";
-import User from "../../entity/User";
-import UserApi from "../../api/UserApi";
+import {
+    loginFieldChangeAction,
+    registerButtonClickedAction,
+    repeatPasswordFieldChangeAction
+} from "../../redux/creator/RegisterActionCreator";
+import {passwordFieldChangeAction} from "../../redux/creator/RegisterActionCreator";
 
 class Register extends Component {
     constructor(props) {
@@ -12,12 +16,6 @@ class Register extends Component {
         this.changeLogin = this.changeLogin.bind(this);
         this.changePassword = this.changePassword.bind(this);
         this.changeRepeatPassword = this.changeRepeatPassword.bind(this);
-        this.state = {
-            loginInput: '',
-            passwordInput: '',
-            repeatPasswordInput: '',
-            message: ''
-        };
     }
 
     render() {
@@ -35,48 +33,31 @@ class Register extends Component {
                         <button className={style.cancelButton}>Cancel</button>
                     </NavLink>
                 </div>
-                <label className={style.message}>{this.state.message}</label>
+                <label className={style.message}>{this.props.registerPageState.getState().registerPage.message}</label>
             </div>
         )
     }
 
     changeLogin(event) {
-        this.setState({loginInput: event.target.value});
+        const action = loginFieldChangeAction(event.target.value);
+        this.props.registerPageState.dispatch(action);
     }
 
     changePassword(event) {
-        this.setState({passwordInput: event.target.value});
+        const action = passwordFieldChangeAction(event.target.value);
+        this.props.registerPageState.dispatch(action);
     }
 
     changeRepeatPassword(event) {
-        this.setState({repeatPasswordInput: event.target.value});
+        const action = repeatPasswordFieldChangeAction(event.target.value);
+        this.props.registerPageState.dispatch(action);
     }
 
     registerClicked() {
-        const result = this.checkCredentials();
-        if (result) {
-            const stringifyUser = JSON.stringify(this.registerUser());
-            const createUser = new UserApi();
-            createUser.createUser(stringifyUser)
-                .then(() => {
-                    this.setState({message: 'Success'});
-                })
-                .catch(this.setState({message: "User with such login is already exist"}))
-        } else {
-            this.setState({message: "Passwords doesnt match"})
-        }
-
+        const action = registerButtonClickedAction(this.props.registerPageState.dispatch);
+        this.props.registerPageState.dispatch(action);
     }
 
-    checkCredentials = () => {
-        return this.state.repeatPasswordInput === this.state.passwordInput;
-    }
-
-    registerUser = () => {
-        const loginInput = this.state.loginInput;
-        const passwordInput = this.state.passwordInput;
-        return new User(loginInput, passwordInput);
-    }
 }
 
 export default Register
