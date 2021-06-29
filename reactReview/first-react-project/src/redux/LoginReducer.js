@@ -1,5 +1,3 @@
-import AuthApi from "../api/AuthApi";
-
 const initialParams = {
     invalidCredentials: false,
     login: '',
@@ -8,34 +6,19 @@ const initialParams = {
 }
 export const loginReducer = (state = initialParams, action) => {
     switch (action.type) {
-        case 'LOGIN-BUTTON-CLICKED': {
-            serverRequest(state,action.dispatch)
-            return state;
+        case 'SET-TOKEN': {
+            return {...state, token: action.token};
         }
         case 'LOGIN-FIELD-CHANGE': {
-            state.login = action.loginText;
-            return state;
+            return {...state, login: action.loginText};
         }
         case 'PASSWORD-FIELD-CHANGE': {
-            state.password = action.passwordText;
-            return state;
+            return {...state, password: action.passwordText};
+        }
+        case 'INVALID-CREDENTIALS': {
+            return {...state, invalidCredentials: action.isInvalid};
         }
         default:
             return state;
     }
-}
-const serverRequest = (state,dispatch) => {
-    const user = createUser(state);
-    const authApi = new AuthApi();
-    authApi.auth(user)
-        .then(response => {
-            state.token = response.token;
-            dispatch({type:''});
-        })
-        .catch(state.invalidCredentials = true);
-}
-const createUser = (state) => {
-    const login = state.login;
-    const password = state.password;
-    return {login, password}
 }

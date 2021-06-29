@@ -1,5 +1,3 @@
-import UserApi from "../api/UserApi";
-
 const initialParams = {
     login: '',
     password: '',
@@ -9,47 +7,19 @@ const initialParams = {
 
 export const registerReducer = (state = initialParams, action) => {
     switch (action.type) {
-        case 'REGISTER-BUTTON-CLICKED': {
-            registerUser(state,action.dispatch)
-            return state;
+        case 'SET-MESSAGE': {
+            return {...state, message: action.message};
         }
         case 'LOGIN-FIELD-CHANGE': {
-            state.login = action.loginText;
-            return state;
+            return {...state, login: action.loginText};
         }
         case 'PASSWORD-FIELD-CHANGE': {
-            state.password = action.passwordText;
-            return state;
+            return {...state, password: action.passwordText};
         }
         case 'REPEAT-PASSWORD-FIELD-CHANGE': {
-            state.repeatPassword = action.repeatPasswordText;
-            return state;
+            return {...state, repeatPassword: action.repeatPasswordText};
         }
         default:
             return state
     }
-}
-const registerUser = (state,dispatch) => {
-    const result = checkCredentials(state);
-    if (result) {
-        const user = createUserFromLoginAndPassword(state);
-        const createUser = new UserApi();
-        createUser.createUser(user)
-            .then(() => {
-                state.message = 'Success';
-                dispatch({type:''});
-            })
-            .catch(state.message = "User with such login is already exist")
-    } else {
-        state.message = "Passwords doesnt match";
-    }
-}
-const checkCredentials = (state) => {
-    return state.repeatPassword === state.password;
-}
-
-const createUserFromLoginAndPassword = (state) => {
-    const login = state.login;
-    const password = state.password;
-    return {login, password}
 }

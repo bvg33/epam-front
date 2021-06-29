@@ -1,5 +1,5 @@
-export const registerButtonClickedAction = (dispatch) => {
-    return ({type:'REGISTER-BUTTON-CLICKED',dispatch})
+export const setMessage = (message) => {
+    return ({type:'SET-MESSAGE',message})
 }
 export const loginFieldChangeAction = (loginText) => {
     return ({type:'LOGIN-FIELD-CHANGE',loginText})

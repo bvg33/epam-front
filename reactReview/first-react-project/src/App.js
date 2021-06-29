@@ -1,9 +1,9 @@
 import React, {Component} from "react";
-import Header from "./component/header/Header";
-import Login from "./component/login/Login";
-import Register from "./component/register/Register";
 import {BrowserRouter, Route} from "react-router-dom";
-import MainPage from "./component/mainPage/MainPage";
+import {LoginContainer} from "./component/login/LoginContainer";
+import {RegisterContainer} from "./component/register/RegisterContainer";
+import {MainPageContainer} from "./component/mainPage/MainPageContainer";
+import {HeaderContainer} from "./component/header/HeaderContainer";
 
 class App extends Component {
     constructor(props) {
@@ -13,10 +13,10 @@ class App extends Component {
     render() {
         return (
             <BrowserRouter>
-                <Header globalState={this.props.store}/>
-                <Route exact path='/login' render={() => <Login loginPageState={this.props.store}/>}/>
-                <Route exact path='/register' render={() => <Register registerPageState={this.props.store}/>}/>
-                <Route exact path='/main' render={() => <MainPage globalState={this.props.store}/>}/>
+                <HeaderContainer/>
+                <Route exact path='/login' render={() => <LoginContainer/>}/>
+                <Route exact path='/register' render={() => <RegisterContainer/>}/>
+                <Route exact path='/main' render={() => <MainPageContainer/>}/>
             </BrowserRouter>
         );
     }

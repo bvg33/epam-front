@@ -3,7 +3,7 @@ import styles from './style/MenuStyle.module.css'
 import {withRouter} from 'react-router-dom';
 import locale from "../../localization/Locale";
 import classNames from "classnames/bind";
-import {goOutFromFolder, logOut} from "../../redux/creator/GlobalStateActionCreator";
+import {goOutFromFolder, sendFileRequest} from "../../service/FileService";
 
 class Menu extends Component {
     constructor(props) {
@@ -23,13 +23,11 @@ class Menu extends Component {
     }
 
     logoutButtonClicked() {
-        const action = logOut();
-        this.props.globalState.dispatch(action);
+        sendFileRequest('/files/getFile',this.props.setFilesParams)
     }
 
     arrowButton() {
-        const action = goOutFromFolder();
-        this.props.globalState.dispatch(action);
+        goOutFromFolder(this.props.url,this.props.setFilesParams);
     }
 
 }

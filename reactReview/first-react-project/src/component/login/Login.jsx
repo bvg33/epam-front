@@ -3,11 +3,7 @@ import epamLogo from './../../images/epamWithBag.png'
 import styles from './style/LoginStyle.module.css'
 import {NavLink, withRouter} from "react-router-dom";
 import locale from "../../localization/Locale";
-import {
-    loginButtonClickedAction,
-    loginFieldChangeAction,
-    passwordFieldChangeAction
-} from "../../redux/creator/LoginActionCreator";
+import {loginServerRequest} from "../../service/LoginService";
 
 class Login extends Component {
 
@@ -36,31 +32,31 @@ class Login extends Component {
                     </button>
                 </NavLink>
                 <label
-                    className={styles.invalidCredentials}>{(this.props.loginPageState.getState().loginPage.invalidCredentials) ? locale.invalidCredentialsText : ''}</label>
+                    className={styles.invalidCredentials}>{(this.props.invalidCredentials) ? locale.invalidCredentialsText : ''}</label>
             </div>
         );
     }
 
     logInCheck() {
-        const token = this.props.loginPageState.getState().loginPage.token;
+        const token = this.props.token;
         if (token !== '') {
             this.props.history.push('/main');
         }
     }
 
     changeLogin(event) {
-        const action = loginFieldChangeAction(event.target.value);
-        this.props.loginPageState.dispatch(action);
+        this.props.loginFieldChange(event.target.value);
     }
 
     changePassword(event) {
-        const action = passwordFieldChangeAction(event.target.value);
-        this.props.loginPageState.dispatch(action);
+        this.props.passwordFieldChange(event.target.value);
     }
 
     loginButtonClick() {
-        const action = loginButtonClickedAction(this.props.loginPageState.dispatch);
-        this.props.loginPageState.dispatch(action);
+        const {login, password} = this.props;
+        const setToken = this.props.setToken;
+        const setInvalidCredentialsMessage = this.props.setInvalidCredentialsMessage;
+        loginServerRequest(login, password, setToken, setInvalidCredentialsMessage);
     }
 }
 

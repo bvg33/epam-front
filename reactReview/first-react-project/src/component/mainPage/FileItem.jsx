@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import styles from './style/FileItemStyle.module.css'
 import {withRouter} from 'react-router-dom';
-import {enterFolder} from "../../redux/creator/GlobalStateActionCreator";
+import {enterFolder} from "../../service/FileService";
 class FileItem extends Component {
     constructor(props) {
         super(props);
@@ -23,8 +23,7 @@ class FileItem extends Component {
     }
 
     openButtonClicked() {
-        const action = enterFolder(this.props.name);
-        this.props.globalState.dispatch(action);
+        enterFolder(this.props.url,this.props.name,this.props.setFilesParams)
     }
 }
 

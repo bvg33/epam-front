@@ -1,15 +1,13 @@
 import {combineReducers, createStore} from "redux";
 import {loginReducer} from "./LoginReducer";
 import {registerReducer} from "./RegisterReducer";
-import {globalStateReducer} from "./GlobalStateReducer";
-import {mainPageReducer} from "./MainPageReducer";
+import {fileStateReducer} from "./FileStateReducer";
 
 
 const reducers = combineReducers({
     loginPage: loginReducer,
     registerPage: registerReducer,
-    globalStateParams: globalStateReducer,
-    mainPage: mainPageReducer
+    fileParams: fileStateReducer,
 })
 const store = createStore(reducers);
 

@@ -4,10 +4,10 @@ import epamLogo from './../../images/epamWithBag.png'
 import {NavLink} from "react-router-dom";
 import {
     loginFieldChangeAction,
-    registerButtonClickedAction,
+    passwordFieldChangeAction,
     repeatPasswordFieldChangeAction
 } from "../../redux/creator/RegisterActionCreator";
-import {passwordFieldChangeAction} from "../../redux/creator/RegisterActionCreator";
+import {registerUser} from "../../service/RegisterService";
 
 class Register extends Component {
     constructor(props) {
@@ -33,29 +33,27 @@ class Register extends Component {
                         <button className={style.cancelButton}>Cancel</button>
                     </NavLink>
                 </div>
-                <label className={style.message}>{this.props.registerPageState.getState().registerPage.message}</label>
+                <label className={style.message}>{this.props.message}</label>
             </div>
         )
     }
 
     changeLogin(event) {
-        const action = loginFieldChangeAction(event.target.value);
-        this.props.registerPageState.dispatch(action);
+        this.props.loginFieldChange(event.target.value);
     }
 
     changePassword(event) {
-        const action = passwordFieldChangeAction(event.target.value);
-        this.props.registerPageState.dispatch(action);
+        this.props.passwordFieldChange(event.target.value);
     }
 
     changeRepeatPassword(event) {
-        const action = repeatPasswordFieldChangeAction(event.target.value);
-        this.props.registerPageState.dispatch(action);
+        this.props.repeatPasswordFieldChange(event.target.value);
     }
 
     registerClicked() {
-        const action = registerButtonClickedAction(this.props.registerPageState.dispatch);
-        this.props.registerPageState.dispatch(action);
+        const {login, password, repeatPassword} = this.props;
+        const setMessage = this.props.setMessage;
+        registerUser({login, password, repeatPassword}, setMessage);
     }
 
 }

@@ -1,15 +1,15 @@
 import React from "react";
 import Logo from "./Logo";
 import Search from "./Search";
-import Menu from "./Menu";
 import styles from './style/HeaderStyle.module.css'
+import {MenuContainer} from "./MenuContainer";
 
 const Header = (props) => {
     return (
         <div className={styles.header}>
             <Logo/>
-            <Search/>
-            <Menu globalState={props.globalState}/>
+            {props.token!==''?<Search/>:''}
+            {props.token!==''?<MenuContainer/>:''}
         </div>
     )
 }
